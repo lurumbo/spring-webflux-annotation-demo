@@ -4,6 +4,8 @@ import com.pigmalion.springwebfluxannotationdemo.model.User;
 import com.pigmalion.springwebfluxannotationdemo.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -13,16 +15,19 @@ public class UserService {
     @Autowired
     IUserRepository userRepository;
 
-    public List<User> getAll () {
-        return userRepository.findAll();
+    public Flux<User> getAll () {
+        List<User> users = userRepository.findAll();
+        return Flux.fromIterable(users);
     }
 
-    public User getById (Long id) {
-        return userRepository.getOne(id);
+    public Mono<User> getById (Long id) {
+        User user = userRepository.getOne(id);
+        return Mono.just(user);
     }
 
-    public void create (User user) {
-        userRepository.save(user);
+    public Mono<User> create (User user) {
+        User dbUser = userRepository.save(user);
+        return Mono.just(dbUser);
     }
 
 }

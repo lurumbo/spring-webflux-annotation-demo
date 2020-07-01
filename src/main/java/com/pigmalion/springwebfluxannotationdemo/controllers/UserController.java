@@ -2,10 +2,13 @@ package com.pigmalion.springwebfluxannotationdemo.controllers;
 
 import com.pigmalion.springwebfluxannotationdemo.model.User;
 import com.pigmalion.springwebfluxannotationdemo.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -14,19 +17,23 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @GetMapping
-    public List<User> getAll () {
+    public Flux<User> getAll () {
        return userService.getAll();
     }
 
     @GetMapping("/{id}")
-    public User getById (@PathVariable("id") Long id) {
+    public Mono<User> getById (@PathVariable("id") Long id) {
         return userService.getById(id);
     }
 
     @PostMapping
     public String create (@RequestBody User user) {
-        userService.create(user);
+        Mono<User> dbUser = userService.create(user);
+        // Subscription to the publisher
+        dbUser.subscribe(u -> logger.info("The user " + u.getName().toUpperCase() + " was created with the id " + u.getId() ));
         return "New user created";
     }
 
