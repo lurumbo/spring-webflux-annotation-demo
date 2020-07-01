@@ -1,9 +1,12 @@
 package com.pigmalion.springwebfluxannotationdemo.model;
 
+import org.hibernate.annotations.Proxy;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
+@Proxy(lazy=false)
 public class User {
 
     @Id

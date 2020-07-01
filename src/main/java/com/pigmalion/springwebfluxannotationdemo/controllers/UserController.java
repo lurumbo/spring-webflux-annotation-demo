@@ -4,7 +4,6 @@ import com.pigmalion.springwebfluxannotationdemo.model.User;
 import com.pigmalion.springwebfluxannotationdemo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -18,6 +17,11 @@ public class UserController {
     @GetMapping
     public List<User> getAll () {
        return userService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public User getById (@PathVariable("id") Long id) {
+        return userService.getById(id);
     }
 
     @PostMapping
